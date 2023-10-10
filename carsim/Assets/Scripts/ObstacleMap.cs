@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using Json.Net;
+//using Json.Net;
 using UnityEngine;
 using Random = System.Random;
 
@@ -335,7 +335,7 @@ public class ObstacleMapManager : MonoBehaviour
     public void SaveObstacleMap(string filepath, float id, ObstacleList obstacleList)
     {
         string fullPath = filepath + id.ToString() + ".json";
-        string json = JsonNet.Serialize(obstacleList);
+        string json = JsonUtility.ToJson(obstacleList);
         File.WriteAllText(fullPath, json);
 
     }
