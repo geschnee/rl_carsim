@@ -91,7 +91,14 @@ public class GameManager : MonoBehaviour
 			
 
 		}
-		this.obstacleMapManager = new ObstacleMapManager(this.transform, obstacleBlue, obstacleRed, goalPassedWallCheckpoint, goalMissedWallCheckpoint, this.FinishLineCheckpoint, this.isFinishLineLastGoal, this.JetBot, this.isTrainingSpawnRandom, this.singleGoalTraining);
+		this.gameObject.AddComponent<ObstacleMapManager>();
+
+		this.obstacleMapManager = this.gameObject.GetComponent<ObstacleMapManager>();
+		//this.obstacleMapManager.gameManagerTransform = this.transform;
+		this.obstacleMapManager.SetLikeInitialize(this.transform, obstacleBlue, obstacleRed, goalPassedWallCheckpoint, goalMissedWallCheckpoint, this.FinishLineCheckpoint, this.isFinishLineLastGoal, this.JetBot, this.isTrainingSpawnRandom, this.singleGoalTraining);
+
+		print("before spawn jetbot in GameManager");
+		// this.obstacleMapManager = new ObstacleMapManager(this.transform, obstacleBlue, obstacleRed, goalPassedWallCheckpoint, goalMissedWallCheckpoint, this.FinishLineCheckpoint, this.isFinishLineLastGoal, this.JetBot, this.isTrainingSpawnRandom, this.singleGoalTraining);
 		this.obstacleMapManager.SpawnJetBot();
 		//InitializeMapWithObstacles();
     }

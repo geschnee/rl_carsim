@@ -9,7 +9,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Linq;
 
-public class CarAgent : Agent
+public class CarAgentHeuristic : Agent
 {
 
 
@@ -45,16 +45,6 @@ public class CarAgent : Agent
 
     public override void Initialize()
     {
-        this.imagePreprocess = new ImageRecognitionPipeline();
-        this.cam = gameObject.GetComponentInChildren<Camera>();
-        this.gameManager = transform.parent.gameObject.GetComponentInChildren<GameManager>();
-        if (this.gameManager.isLogTraining || this.gameManager.isEvaluation)
-        {
-            this.df = new DataFrameManager(this.gameManager.resultsPath, this.gameManager.isEvaluation);
-        }
-        //get spawn manager
-        //this.gameManager.InitializeMapWithObstacles();
-        this.rememberObstaclePositions = this.InitializeObstacleMemory();
     }
 
     public override void OnEpisodeBegin()
@@ -74,15 +64,14 @@ public class CarAgent : Agent
 
         this.gameManager.InitializeMapWithObstacles(true);
 
-        //Instead destroy verschieben -> Car Agent hat alle wichtigen sachen kann nicht destroyd werden
-        //this.gameManager.SpawnJetBot();
-        this.rememberObstaclePositions = this.InitializeObstacleMemory();
+        
 
     }
 
     public void OnEpisodeEnd(string endEvent)
     {
         this.stopwatch.Stop();
+
 
         if (gameManager.isLogTraining)
         {
@@ -162,30 +151,6 @@ public class CarAgent : Agent
 
         Byte[] cameraPicture = this.GetCameraInput();
         //this.imagePreprocess.saveImageToPath(cameraPicture, "camPic.png");
-        List<List<Vector4>> obstaclePositions = this.imagePreprocess.GetCooridnatesNClosestObstacles(this.transform.position, cameraPicture, n: numberOfObstaclesPerType);
-
-        this.rememberObstaclePositions = this.imagePreprocess.TraceObstcalePosition(obstaclePositions, this.rememberObstaclePositions);
-        // add speed input
-        // sensor.AddObservation(this.drivingEngine.getCarVelocity());
-
-        //add actual rotation of object x is up and down
-
-        //add actual steering
-        //sensor.AddObservation(this.drivingEngine.getSteeringAngle());
-
-        // add with memory
-        if (this.hasMemory)
-        {
-            // observation size is 240
-            this.AddObstaclePositionsWithMemory(sensor, this.rememberObstaclePositions);
-        }
-        else
-        {
-            //observation size is 48
-            //only add current observed obstacles without memory
-            this.AddObstacleObservationWithoutMemory(sensor, obstaclePositions);
-        }
-
     }
 
     //Get the AI vehicles camera input encode as byte array
@@ -249,7 +214,7 @@ public class CarAgent : Agent
 
         action[0] = Input.GetAxis("Horizontal");
         action[1] = Input.GetAxis("Vertical");
-        print("Heuristic Input: [" + action[0] + ", " + action[1] + "]");
+        print("CarAgentHeuristic Heuristic Input: [" + action[0] + ", " + action[1] + "]");
     }
 
     public void AddTime(float time)
